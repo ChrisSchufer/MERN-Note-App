@@ -6,6 +6,7 @@ import NoteModel from "../models/note";
 export const getNotes: RequestHandler = async (req, res, next) => {
   try {
     const notes = await NoteModel.find().exec();
+    // console.log(res);
     res.status(200).json(notes);
   } catch (error) {
     next(error);
@@ -49,7 +50,8 @@ export const createNote: RequestHandler<unknown, unknown, CreateNoteBody, unknow
       title,
       text,
     });
-
+    console.log(req.body);
+    console.log("RES: *********", res);
     res.status(201).json(newNote);
   } catch (error) {
     next(error);
@@ -65,7 +67,11 @@ interface UpdateNoteBody {
   text?: string;
 }
 
-export const updateNote: RequestHandler<updateNoteParams, unknown, UpdateNoteBody, unknown> = async (req, resp, next) => {
+export const updateNote: RequestHandler<updateNoteParams, unknown, UpdateNoteBody, unknown> = async (
+  req,
+  resp,
+  next
+) => {
   const noteId = req.params.noteId;
   const newTitle = req.body.title;
   const newText = req.body.text;
