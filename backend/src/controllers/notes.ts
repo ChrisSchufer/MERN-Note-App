@@ -37,12 +37,7 @@ interface CreateNoteBody {
   text?: string;
 }
 
-export const createNote: RequestHandler<
-  unknown,
-  unknown,
-  CreateNoteBody,
-  unknown
-> = async (req, res, next) => {
+export const createNote: RequestHandler<unknown, unknown, CreateNoteBody, unknown> = async (req, res, next) => {
   const title = req.body.title;
   const text = req.body.text;
 
@@ -71,12 +66,7 @@ interface UpdateNoteBody {
   text?: string;
 }
 
-export const updateNote: RequestHandler<
-  updateNoteParams,
-  unknown,
-  UpdateNoteBody,
-  unknown
-> = async (req, resp, next) => {
+export const updateNote: RequestHandler<updateNoteParams, unknown, UpdateNoteBody, unknown> = async (req, resp, next) => {
   const noteId = req.params.noteId;
   const newTitle = req.body.title;
   const newText = req.body.text;
@@ -93,10 +83,7 @@ export const updateNote: RequestHandler<
     const note = await NoteModel.findById(noteId).exec();
 
     if (!note) {
-      throw createHttpError(
-        404,
-        "The note you wanted to update was not found!"
-      );
+      throw createHttpError(404, "The note you wanted to update was not found!");
     }
 
     note.title = newTitle;

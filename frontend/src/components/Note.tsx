@@ -1,11 +1,14 @@
 import { Note as NoteModel } from "../models/notes";
 import { formatDate } from "../utils/formatDate";
+import { AiFillDelete } from "react-icons/ai";
 
 interface NoteProps {
   note: NoteModel;
+  onNoteClicked: (note: NoteModel) => void;
+  onDeleteNoteClicked: (note: NoteModel) => void;
 }
 
-const Note = ({ note }: NoteProps) => {
+const Note = ({ note, onDeleteNoteClicked, onNoteClicked }: NoteProps) => {
   const { title, text, createdAt, updatedAt } = note;
 
   let createdUpdatedText: string;
@@ -16,9 +19,21 @@ const Note = ({ note }: NoteProps) => {
   }
 
   return (
-    <div className="flex flex-col bg-yellow-400/70 rounded-md border border-gray-900 shadow-md hover:shadow-lg transition-shadow duration-200 ease-in cursor-pointer">
-      <div className="px-2 py-3">
-        <h2 className="text-xl font-bold">{title}</h2>
+    <div
+      onClick={() => onNoteClicked(note)}
+      className="flex flex-col bg-yellow-400/70 rounded-md border border-gray-900 shadow-md hover:shadow-lg transition-shadow duration-200 ease-in cursor-pointer"
+    >
+      <div className="px-4 py-3">
+        <div className="flex flex-nowrap items-start gap-4">
+          <h2 className="text-xl font-bold">{title}</h2>
+          <AiFillDelete
+            onClick={(e) => {
+              onDeleteNoteClicked(note);
+              e.stopPropagation();
+            }}
+            className="ml-auto mt-[6px] scale-150 fill-black/70 hover:fill-black/90 transition-colors duration-200 ease-in"
+          />
+        </div>
         <p className="mt-1 whitespace-pre-line mb-2">{text}</p>
       </div>
       <div className="border-t-2 mt-auto border-black bg-yellow-500/50 px-2 py-1">
