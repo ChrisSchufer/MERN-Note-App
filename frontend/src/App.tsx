@@ -4,20 +4,28 @@ import Note from "./components/Note";
 import * as NotesApi from "./network/notes_api";
 import AddNoteDialog from "./components/AddEditNoteDialog";
 import { FaPlus } from "react-icons/fa";
+import { BarLoader } from "react-spinners";
 
 function App() {
   const [notes, setNotes] = useState<NoteModel[]>([]);
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [showNotesLoadingError, setShowNotesLoadingError] = useState(false);
+
   const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
   const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
 
   useEffect(() => {
     async function loadNotes() {
       try {
+        setShowNotesLoadingError(false);
+        setNotesLoading(true);
         const notes = await NotesApi.fetchNotes();
         setNotes(notes);
       } catch (error) {
         console.error(error);
-        alert(error);
+        setShowNotesLoadingError(true);
+      } finally {
+        setNotesLoading(false);
       }
     }
     loadNotes();
@@ -35,6 +43,19 @@ function App() {
 
   console.log(notes);
 
+  const notesGrid = (
+    <div className="grid grid-cols-2 lg:grid-cols-4 max-w-7xl gap-6 mx-auto p-5">
+      {notes.map((note) => (
+        <Note
+          key={note._id}
+          note={note}
+          onDeleteNoteClicked={deleteNote}
+          onNoteClicked={setNoteToEdit}
+        />
+      ))}
+    </div>
+  );
+
   return (
     <div>
       <button
@@ -44,16 +65,11 @@ function App() {
         <FaPlus className="mr-1" /> Add new note
       </button>
       <h2 className="text-4xl text-center my-6">Take Notes App</h2>
-      <div className="grid grid-cols-2 lg:grid-cols-4 max-w-7xl gap-6 mx-auto p-5">
-        {notes.map((note) => (
-          <Note
-            key={note._id}
-            note={note}
-            onDeleteNoteClicked={deleteNote}
-            onNoteClicked={setNoteToEdit}
-          />
-        ))}
-      </div>
+      {/*notesLoading && UNCOMMENT WHEN PLACED CORRECTLY */ <BarLoader color="#36d7b7" />}
+      {showNotesLoadingError && <p>Something went wrong. Please refresh the page.</p>}
+      {!notesLoading && !showNotesLoadingError && (
+        <>{notes.length > 0 ? notesGrid : <p>You don´t have any notes yet</p>}</>
+      )}
       {showAddNoteDialog && (
         <AddNoteDialog
           onNoteSaved={(newNote) => {
