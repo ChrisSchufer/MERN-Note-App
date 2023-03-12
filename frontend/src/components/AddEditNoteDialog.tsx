@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { Note } from "../models/notes";
 import { NoteInput } from "../network/notes_api";
 import * as NotesApi from "../network/notes_api";
+import TextInputField from "./form/TextInputField";
 
 interface AddEditNoteDialog {
   noteToEdit?: Note;
@@ -52,38 +53,24 @@ function AddEditNoteDialog({ noteToEdit, setShowAddNoteDialog, onNoteSaved }: Ad
           </div>
           <hr />
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="flex flex-col mt-6 mx-4">
-              <label
-                className="text-xl mb-1"
-                htmlFor="title"
-              >
-                Title <span className="text-red-600 text-base font-semibold ml-2">{errors.title?.message}</span>
-              </label>
-              <input
-                className={`border focus:outline text-lg rounded-md transition-shadow duration-200 ease-in-out p-1 pl-3 py-2 ${errors.title ? "shadow-customError" : "focus:shadow-custom"}`}
-                id="title"
-                type="text"
-                placeholder="Title"
-                {...register("title", {
-                  required: "Required: Please add a title.",
-                  minLength: 2,
-                })}
-              />
-            </div>
-            <div className="flex flex-col mt-4 mx-4">
-              <label
-                className="text-xl mb-1"
-                htmlFor="text"
-              >
-                Text
-              </label>
-              <textarea
-                className="border p-1 text-lg rounded-md pl-3 py-2 focus:shadow-custom focus:outline transition-shadow duration-200 ease-in-out"
-                id="text"
-                placeholder="Text"
-                {...register("text")}
-              />
-            </div>
+            <TextInputField
+              name="title"
+              label="Title"
+              as="input"
+              type="text"
+              placeholder="Title"
+              register={register}
+              registerOptions={{ required: "Required: Please enter a title", minLength: 2 }}
+              error={errors.title}
+            />
+            <TextInputField
+              name="text"
+              label="Text"
+              as="textarea"
+              rows={3}
+              placeholder="Add some text here..."
+              register={register}
+            />
 
             <hr className="mt-8" />
 
